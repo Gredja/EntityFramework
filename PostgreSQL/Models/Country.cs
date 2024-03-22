@@ -1,10 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PostgreSQL.Models
+namespace PostgreSQL.Models;
+
+[Table("Country")]
+public partial class Country
 {
-    public class Country
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-    }
+    [Key]
+    public int Id { get; set; }
+
+    public string? Name { get; set; }
+
+    [InverseProperty("Country")]
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

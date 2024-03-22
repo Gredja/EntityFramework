@@ -1,38 +1,39 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using PostgreSQL.Configurations;
 
 namespace PostgreSQL.Models;
 
-[Table("Users")]
-[Index("PassportNumber", "PassportSeria")]
-public class User
+[Index("CompanyId", Name = "IX_Users_CompanyId")]
+[Index("CountryId", Name = "IX_Users_CountryId")]
+[Index("PassportNumber", "PassportSeria", Name = "IX_Users_PassportNumber_PassportSeria")]
+//[EntityTypeConfiguration(typeof(UserConfiguration))]
+public partial class User
 {
-    [Column("User_id")]
-    [Required]
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("User_id")]
     public int Id { get; set; }
 
-    [Required]
-    public string Name { get; set; }
-
-    public int Age { get; set; }
-
-    [NotMapped]
-    public bool IsMarried { get; set; }
+    public string Name { get; set; } = null!;
 
     public string? Position { get; set; }
 
-    [Required]
+    public int? CompanyId { get; set; }
+
+    public int Age { get; set; }
+
+    public int? CountryId { get; set; }
+
     public int PassportNumber { get; set; }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    [DefaultValue("11111111")]
-    public string PassportSeria { get; set; }
+    public string PassportSeria { get; set; } = null!;
 
-    public Company? Company { get; set; }
+    [ForeignKey("CompanyId")]
+    [InverseProperty("Users")]
+    public virtual Company? Company { get; set; }
 
-    public Country? Country { get; set; }
+    [ForeignKey("CountryId")]
+    [InverseProperty("Users")]
+    public virtual Country? Country { get; set; }
 }
