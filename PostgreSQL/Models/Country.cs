@@ -12,5 +12,5 @@ public partial class Country
     public string? Name { get; set; }
 
     [InverseProperty("Country")]
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public List<Company> Companies { get; set; } = [];
 }

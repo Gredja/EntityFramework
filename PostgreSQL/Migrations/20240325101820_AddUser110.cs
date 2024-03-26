@@ -5,24 +5,22 @@
 namespace PostgreSQL.Migrations
 {
     /// <inheritdoc />
-    public partial class UserProperty2 : Migration
+    public partial class AddUser110 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Age",
+            migrationBuilder.AddCheckConstraint(
+                name: "ValidAge",
                 table: "Users",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+                sql: "\"Age\" > 0 AND \"Age\" < 120");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Age",
+            migrationBuilder.DropCheckConstraint(
+                name: "ValidAge",
                 table: "Users");
         }
     }

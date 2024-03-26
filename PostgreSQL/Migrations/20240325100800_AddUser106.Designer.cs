@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PostgreSQL;
@@ -11,9 +12,11 @@ using PostgreSQL;
 namespace PostgreSQL.Migrations
 {
     [DbContext(typeof(UsersdbContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240325100800_AddUser106")]
+    partial class AddUser106
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,16 +33,11 @@ namespace PostgreSQL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Company");
                 });
@@ -92,6 +90,9 @@ namespace PostgreSQL.Migrations
                     b.Property<int?>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -116,6 +117,8 @@ namespace PostgreSQL.Migrations
 
                     b.HasIndex(new[] { "CompanyId" }, "IX_Users_CompanyId");
 
+                    b.HasIndex(new[] { "CountryId" }, "IX_Users_CountryId");
+
                     b.HasIndex(new[] { "PassportNumber", "PassportSeria" }, "IX_Users_PassportNumber_PassportSeria");
 
                     b.ToTable("Users", t =>
@@ -124,24 +127,19 @@ namespace PostgreSQL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PostgreSQL.Models.Company", b =>
-                {
-                    b.HasOne("PostgreSQL.Models.Country", "Country")
-                        .WithMany("Companies")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("PostgreSQL.Models.User", b =>
                 {
                     b.HasOne("PostgreSQL.Models.Company", "Company")
                         .WithMany("Users")
                         .HasForeignKey("CompanyId");
 
+                    b.HasOne("PostgreSQL.Models.Country", "Country")
+                        .WithMany("Users")
+                        .HasForeignKey("CountryId");
+
                     b.Navigation("Company");
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("PostgreSQL.Models.Company", b =>
@@ -151,7 +149,7 @@ namespace PostgreSQL.Migrations
 
             modelBuilder.Entity("PostgreSQL.Models.Country", b =>
                 {
-                    b.Navigation("Companies");
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
